@@ -1,0 +1,46 @@
+﻿@page "/medicaid"
+@inject HttpClient HttpClient
+
+<h1>Medicaid Eligibility</h1>
+
+<p>This component demonstrates fetching Medicaid eligibility from a Web API protected by Azure API Management.</p>
+
+@if (apiResult == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <h2>Eligibility</h2>
+    if (apiResult.Contains("true"))
+    {
+        <div class="alert alert-success" role="alert">
+            Eligible
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger" role="alert">
+            Ineligible
+        </div>
+    }
+}
+
+@code {
+    private HttpResponseMessage response;
+    private string apiResult;
+    protected override async Task OnInitializedAsync()
+    {
+        var body = new { getBank = new { blz = "sample" } };
+        response = await HttpClient.PostAsJsonAsync("medicaid/getEligibility", body);
+
+        if (response.StatusCode == System.Net.HttpStatusCode.OK)
+        {
+            apiResult = await response.Content.ReadAsStringAsync();
+        }
+        else
+        {
+            apiResult = "Failed to call the web API";
+        }
+    }
+}

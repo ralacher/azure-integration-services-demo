@@ -1,0 +1,86 @@
+<policies>
+    <inbound>
+        <base />
+        <rewrite-uri template="/axis2/services/BLZService" copy-unmatched-params="false" />
+        <set-header name="SOAPAction" exists-action="override">
+            <value>"getBank"</value>
+        </set-header>
+        <set-body template="liquid">
+			<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns="http://thomas-bayer.com/blz/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<soap:Body>
+					<getBank>
+                {% if body.getBank.blz %}
+                <blz>{{body.getBank.blz}}</blz>
+                {% else %}
+                <blz xsi:nil="true" />
+                {% endif %}
+            </getBank>
+				</soap:Body>
+			</soap:Envelope>
+		</set-body>
+        <set-header name="Content-Type" exists-action="override">
+            <value>text/xml</value>
+        </set-header>
+        <return-response>
+            <set-status code="200" reason="OK" />
+            <set-body>{"eligible": true}</set-body>
+        </return-response>
+    </inbound>
+    <backend>
+        <base />
+    </backend>
+    <outbound>
+        <base />
+        <choose>
+            <when condition="@(context.Response.StatusCode < 400)">
+                <set-body template="liquid">
+        {
+            "getBankResponse": 
+            {
+                "details": 
+                {
+                    "bezeichnung": {% if body.envelope.body.getBankResponse.details.bezeichnung %}"{{body.envelope.body.getBankResponse.details.bezeichnung | Replace: '\r', '\r' | Replace: '\n', '\n' | Replace: '([^\\](\\\\)*)"', '$1\"'}}"{% else %} null {% endif %},
+                    "bic": {% if body.envelope.body.getBankResponse.details.bic %}"{{body.envelope.body.getBankResponse.details.bic | Replace: '\r', '\r' | Replace: '\n', '\n' | Replace: '([^\\](\\\\)*)"', '$1\"'}}"{% else %} null {% endif %},
+                    "ort": {% if body.envelope.body.getBankResponse.details.ort %}"{{body.envelope.body.getBankResponse.details.ort | Replace: '\r', '\r' | Replace: '\n', '\n' | Replace: '([^\\](\\\\)*)"', '$1\"'}}"{% else %} null {% endif %},
+                    "plz": {% if body.envelope.body.getBankResponse.details.plz %}"{{body.envelope.body.getBankResponse.details.plz | Replace: '\r', '\r' | Replace: '\n', '\n' | Replace: '([^\\](\\\\)*)"', '$1\"'}}"{% else %} null {% endif %}
+                }
+            }
+        }</set-body>
+            </when>
+            <otherwise>
+                <set-variable name="old-body" value="@(context.Response.Body.As<string>(preserveContent: true))" />
+                <!-- Error response as per https://github.com/Microsoft/api-guidelines/blob/master/Guidelines.md#7102-error-condition-responses -->
+                <set-body template="liquid">{
+            "error": {
+                "code": "{{body.envelope.body.fault.faultcode}}",
+                "message": "{{body.envelope.body.fault.faultstring}}"
+            }
+        }</set-body>
+                <choose>
+                    <when condition="@(string.IsNullOrEmpty(context.Response.Body.As<JObject>(preserveContent: true)["error"]["code"].ToString()) && string.IsNullOrEmpty(context.Response.Body.As<JObject>(preserveContent: true)["error"]["message"].ToString()))">
+                        <set-body>@{
+                    var newResponseBody = new JObject();
+                    newResponseBody["error"] = new JObject();
+                    newResponseBody["error"]["code"] = "InvalidErrorResponseBody";
+                    if (string.IsNullOrEmpty((string)context.Variables["old-body"]))
+                    {
+                        newResponseBody["error"]["message"] = "The error response body was not a valid SOAP error response. The response body was empty.";
+                    }
+                    else
+                    {
+                        newResponseBody["error"]["message"] = "The error response body was not a valid SOAP error response. The response body was: '" + context.Variables["old-body"] + "'.";
+                    }
+                    return newResponseBody.ToString();
+                }</set-body>
+                    </when>
+                </choose>
+            </otherwise>
+        </choose>
+        <set-header name="Content-Type" exists-action="override">
+            <value>application/json</value>
+        </set-header>
+    </outbound>
+    <on-error>
+        <base />
+    </on-error>
+</policies>

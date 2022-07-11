@@ -1,0 +1,121 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+        "title": "Medicaid",
+        "version": "1.0"
+    },
+    "servers": [
+        {
+            "url": "https://apim-storage-robertlacher.azure-api.net/medicaid"
+        }
+    ],
+    "paths": {
+        "/getEligibility": {
+            "post": {
+                "summary": "Eligibility",
+                "operationId": "62a356145ddd170a24f0ca10",
+                "requestBody": {
+                    "description": "getBank",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/getBank"
+                            },
+                            "example": {
+                                "getBank": {
+                                    "blz": "sample"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "getBankResponse",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/getBankResponse"
+                                },
+                                "example": {
+                                    "getBankResponse": {
+                                        "details": {
+                                            "bezeichnung": "sample",
+                                            "bic": "sample",
+                                            "ort": "sample",
+                                            "plz": "sample"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "getBank": {
+                "type": "object",
+                "properties": {
+                    "getBank": {
+                        "type": "object",
+                        "properties": {
+                            "blz": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "getBankResponse": {
+                "type": "object",
+                "properties": {
+                    "getBankResponse": {
+                        "type": "object",
+                        "properties": {
+                            "details": {
+                                "type": "object",
+                                "properties": {
+                                    "bezeichnung": {
+                                        "type": "string"
+                                    },
+                                    "bic": {
+                                        "type": "string"
+                                    },
+                                    "ort": {
+                                        "type": "string"
+                                    },
+                                    "plz": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "apiKeyHeader": {
+                "type": "apiKey",
+                "name": "Ocp-Apim-Subscription-Key",
+                "in": "header"
+            },
+            "apiKeyQuery": {
+                "type": "apiKey",
+                "name": "subscription-key",
+                "in": "query"
+            }
+        }
+    },
+    "security": [
+        {
+            "apiKeyHeader": []
+        },
+        {
+            "apiKeyQuery": []
+        }
+    ]
+}

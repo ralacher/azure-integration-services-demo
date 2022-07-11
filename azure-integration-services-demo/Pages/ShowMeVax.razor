@@ -1,0 +1,112 @@
+﻿@page "/smv"
+@inject HttpClient HttpClient
+
+<h1>Required Vaccines</h1>
+
+<p>This component demonstrates fetching missing vaccinations from a Web API protected by Azure API Management.</p>
+
+@if (doSubmit == false)
+{
+    <EditForm EditContext="@editContext" OnSubmit="@HandleSubmit">
+        <InputSelect class="form-select" @bind-Value="vaccinations.SelectedVaccinations">
+            <option selected value="polio">Polio</option>
+            <option value="mmr">MMR</option>
+            <option value="rabies   ">Rabies</option>
+        </InputSelect>
+        <br />
+        <button class="btn btn-primary" type="submit">Submit</button>
+    </EditForm>
+}
+else
+{
+    <h2>Missing Vaccinations</h2>
+    if (doWait == true)
+    {
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    }
+
+    if (missing != null)
+    {
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Required</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var m in missing.missing)
+                {
+                    <tr>
+                        <td>@m</td>
+                        <td>Yes</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else if (doWait == false)
+    {
+        <p>Processing...</p>
+        <button class="btn btn-primary" type="submit" onclick="@HandleRefresh">Refresh</button>
+    }
+}
+
+@code {
+
+    public class Vaccinations
+    {
+        public Vaccinations()
+        {
+            SelectedVaccinations = new string[] { };
+        }
+        public string[] SelectedVaccinations { get; set; }
+    }
+
+    EditContext editContext;
+    private Vaccinations vaccinations = new();
+    private Missing missing;
+
+    private HttpResponseMessage response;
+    private string apiResult = "";
+    private bool doWait = false;
+    private bool doSubmit = false;
+
+    protected async Task HandleRefresh()
+    {
+        try
+        {
+            response = await HttpClient.GetAsync("smv/invoke");
+            apiResult = null;
+            doWait = false;
+            missing = await response.Content.ReadFromJsonAsync<Missing>();
+        }
+        catch (Exception ex)
+        {
+        }
+    }
+
+    protected async Task HandleSubmit()
+    {
+        try
+        {
+            doSubmit = true;
+            doWait = true;
+            response = await HttpClient.GetAsync("smv/");
+            apiResult = await response.Content.ReadAsStringAsync();
+            doWait = false;
+        }
+        catch (Exception ex)
+        {
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        editContext = new(vaccinations);
+    }
+
+    record Missing(List<string> missing);
+}
