@@ -85,7 +85,7 @@ resource showMeVaxRequiredPolicy 'Microsoft.ApiManagement/service/apis/operation
   parent: showMeVaxRequiredOperation
   properties: {
     format: 'xml'
-    value: loadTextContent('showMeVax-get-required.xml')
+    value: loadTextContent('api-management-policy/showMeVax-get-required.xml')
   }
 }
 
@@ -108,7 +108,7 @@ resource showMeVaxRefreshPolicy 'Microsoft.ApiManagement/service/apis/operations
   parent: showMeVaxRefreshOperation
   properties: {
     format: 'xml'
-    value: loadTextContent('showMeVax-refresh.xml')
+    value: loadTextContent('api-management-policy/showMeVax-refresh.xml')
   }
 }
 
@@ -120,7 +120,7 @@ resource medicaidApi 'Microsoft.ApiManagement/service/apis@2021-12-01-preview' =
     path: 'medicaid'
     format: 'openapi+json'
     subscriptionRequired: false
-    value: loadTextContent('medicaid.json')
+    value: loadTextContent('api-management-openapi-definitions/medicaid.json')
   }
 }
 
@@ -129,7 +129,7 @@ resource medicaidPolicy 'Microsoft.ApiManagement/service/apis/policies@2021-12-0
   parent: medicaidApi
   properties: {
     format: 'rawxml'
-    value: loadTextContent('medicaid-policy.xml')
+    value: loadTextContent('api-management-policy/medicaid-policy.xml')
   }
 }
 
@@ -142,6 +142,9 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2020-12-01' = {
   sku: {
     name: 'S1'
     capacity: 1
+  }
+  properties: {
+    reserved: true
   }
   kind: 'linux'
 }
@@ -174,7 +177,7 @@ resource webApplicationSource 'Microsoft.Web/sites/sourcecontrols@2021-01-01' = 
   name: '${webApplication.name}/web'
   properties: {
     repoUrl: 'https://github.com/ralacher/azure-integration-services-demo'
-    branch: 'main'
+    branch: 'master'
     isManualIntegration: true
   }
 }
