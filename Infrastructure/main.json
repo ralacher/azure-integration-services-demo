@@ -1,0 +1,551 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.8.9.13224",
+      "templateHash": "1659594140166326115"
+    }
+  },
+  "parameters": {
+    "appName": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]"
+    }
+  },
+  "variables": {
+    "$fxv#0": "<!--\r\n    IMPORTANT:\r\n    - Policy elements can appear only within the <inbound>, <outbound>, <backend> section elements.\r\n    - To apply a policy to the incoming request (before it is forwarded to the backend service), place a corresponding policy element within the <inbound> section element.\r\n    - To apply a policy to the outgoing response (before it is sent back to the caller), place a corresponding policy element within the <outbound> section element.\r\n    - To add a policy, place the cursor at the desired insertion point and select a policy from the sidebar.\r\n    - To remove a policy, delete the corresponding policy statement from the policy document.\r\n    - Position the <base> element within a section element to inherit all policies from the corresponding section element in the enclosing scope.\r\n    - Remove the <base> element to prevent inheriting policies from the corresponding section element in the enclosing scope.\r\n    - Policies are applied in the order of their appearance, from the top down.\r\n    - Comments within policy elements are not supported and may disappear. Place your comments between policy elements or at a higher level scope.\r\n-->\r\n<policies>\r\n    <inbound>\r\n        <base />\r\n        <set-backend-service backend-id=\"put-message\" />\r\n        <set-query-parameter name=\"api-version\" exists-action=\"override\">\r\n            <value>2022-09-01-preview</value>\r\n        </set-query-parameter>\r\n        <set-query-parameter name=\"sp\" exists-action=\"override\">\r\n            <value>%2Ftriggers%2Fmanual%2Frun</value>\r\n        </set-query-parameter>\r\n        <set-query-parameter name=\"sv\" exists-action=\"override\">\r\n            <value>1.0</value>\r\n        </set-query-parameter>\r\n        <set-query-parameter name=\"sig\" exists-action=\"override\">\r\n            <value>{{put-message-auth-token}}</value>\r\n        </set-query-parameter>\r\n        <set-method>POST</set-method>\r\n        <set-body>{\"vaccinations\": [\"MMR\", \"Polio\"]}</set-body>\r\n        <set-header name=\"Authorization\" exists-action=\"delete\" />\r\n    </inbound>\r\n    <backend>\r\n        <base />\r\n    </backend>\r\n    <outbound>\r\n        <base />\r\n    </outbound>\r\n    <on-error>\r\n        <base />\r\n    </on-error>\r\n</policies>",
+    "$fxv#1": "<!--\r\n    IMPORTANT:\r\n    - Policy elements can appear only within the <inbound>, <outbound>, <backend> section elements.\r\n    - To apply a policy to the incoming request (before it is forwarded to the backend service), place a corresponding policy element within the <inbound> section element.\r\n    - To apply a policy to the outgoing response (before it is sent back to the caller), place a corresponding policy element within the <outbound> section element.\r\n    - To add a policy, place the cursor at the desired insertion point and select a policy from the sidebar.\r\n    - To remove a policy, delete the corresponding policy statement from the policy document.\r\n    - Position the <base> element within a section element to inherit all policies from the corresponding section element in the enclosing scope.\r\n    - Remove the <base> element to prevent inheriting policies from the corresponding section element in the enclosing scope.\r\n    - Policies are applied in the order of their appearance, from the top down.\r\n    - Comments within policy elements are not supported and may disappear. Place your comments between policy elements or at a higher level scope.\r\n-->\r\n<policies>\r\n    <inbound>\r\n        <base />\r\n        <set-backend-service backend-id=\"send-http-response\" />\r\n        <rewrite-uri template=\"/\" />\r\n        <set-query-parameter name=\"api-version\" exists-action=\"override\">\r\n            <value>2022-09-01-preview</value>\r\n        </set-query-parameter>\r\n        <set-query-parameter name=\"sp\" exists-action=\"override\">\r\n            <value>%2Ftriggers%2Fmanual%2Frun</value>\r\n        </set-query-parameter>\r\n        <set-query-parameter name=\"sv\" exists-action=\"override\">\r\n            <value>1.0</value>\r\n        </set-query-parameter>\r\n        <set-query-parameter name=\"sig\" exists-action=\"override\">\r\n            <value>{{send-response-auth-token}}</value>\r\n        </set-query-parameter>\r\n        <set-method>GET</set-method>\r\n        <set-header name=\"Authorization\" exists-action=\"delete\" />\r\n    </inbound>\r\n    <backend>\r\n        <base />\r\n    </backend>\r\n    <outbound>\r\n        <base />\r\n    </outbound>\r\n    <on-error>\r\n        <base />\r\n    </on-error>\r\n</policies>",
+    "$fxv#2": "{\n    \"openapi\": \"3.0.1\",\n    \"info\": {\n        \"title\": \"Medicaid\",\n        \"version\": \"1.0\"\n    },\n    \"servers\": [\n        {\n            \"url\": \"https://apim-storage-robertlacher.azure-api.net/medicaid\"\n        }\n    ],\n    \"paths\": {\n        \"/getEligibility\": {\n            \"post\": {\n                \"summary\": \"Eligibility\",\n                \"operationId\": \"62a356145ddd170a24f0ca10\",\n                \"requestBody\": {\n                    \"description\": \"getBank\",\n                    \"content\": {\n                        \"application/json\": {\n                            \"schema\": {\n                                \"$ref\": \"#/components/schemas/getBank\"\n                            },\n                            \"example\": {\n                                \"getBank\": {\n                                    \"blz\": \"sample\"\n                                }\n                            }\n                        }\n                    }\n                },\n                \"responses\": {\n                    \"200\": {\n                        \"description\": \"getBankResponse\",\n                        \"content\": {\n                            \"application/json\": {\n                                \"schema\": {\n                                    \"$ref\": \"#/components/schemas/getBankResponse\"\n                                },\n                                \"example\": {\n                                    \"getBankResponse\": {\n                                        \"details\": {\n                                            \"bezeichnung\": \"sample\",\n                                            \"bic\": \"sample\",\n                                            \"ort\": \"sample\",\n                                            \"plz\": \"sample\"\n                                        }\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    },\n    \"components\": {\n        \"schemas\": {\n            \"getBank\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"getBank\": {\n                        \"type\": \"object\",\n                        \"properties\": {\n                            \"blz\": {\n                                \"type\": \"string\"\n                            }\n                        }\n                    }\n                }\n            },\n            \"getBankResponse\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"getBankResponse\": {\n                        \"type\": \"object\",\n                        \"properties\": {\n                            \"details\": {\n                                \"type\": \"object\",\n                                \"properties\": {\n                                    \"bezeichnung\": {\n                                        \"type\": \"string\"\n                                    },\n                                    \"bic\": {\n                                        \"type\": \"string\"\n                                    },\n                                    \"ort\": {\n                                        \"type\": \"string\"\n                                    },\n                                    \"plz\": {\n                                        \"type\": \"string\"\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n        },\n        \"securitySchemes\": {\n            \"apiKeyHeader\": {\n                \"type\": \"apiKey\",\n                \"name\": \"Ocp-Apim-Subscription-Key\",\n                \"in\": \"header\"\n            },\n            \"apiKeyQuery\": {\n                \"type\": \"apiKey\",\n                \"name\": \"subscription-key\",\n                \"in\": \"query\"\n            }\n        }\n    },\n    \"security\": [\n        {\n            \"apiKeyHeader\": []\n        },\n        {\n            \"apiKeyQuery\": []\n        }\n    ]\n}",
+    "$fxv#3": "<policies>\r\n    <inbound>\r\n        <base />\r\n        <rewrite-uri template=\"/axis2/services/BLZService\" copy-unmatched-params=\"false\" />\r\n        <set-header name=\"SOAPAction\" exists-action=\"override\">\r\n            <value>\"getBank\"</value>\r\n        </set-header>\r\n        <set-body template=\"liquid\">\r\n\t\t\t<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns=\"http://thomas-bayer.com/blz/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n\t\t\t\t<soap:Body>\r\n\t\t\t\t\t<getBank>\r\n                {% if body.getBank.blz %}\r\n                <blz>{{body.getBank.blz}}</blz>\r\n                {% else %}\r\n                <blz xsi:nil=\"true\" />\r\n                {% endif %}\r\n            </getBank>\r\n\t\t\t\t</soap:Body>\r\n\t\t\t</soap:Envelope>\r\n\t\t</set-body>\r\n        <set-header name=\"Content-Type\" exists-action=\"override\">\r\n            <value>text/xml</value>\r\n        </set-header>\r\n        <return-response>\r\n            <set-status code=\"200\" reason=\"OK\" />\r\n            <set-body>{\"eligible\": true}</set-body>\r\n        </return-response>\r\n    </inbound>\r\n    <backend>\r\n        <base />\r\n    </backend>\r\n    <outbound>\r\n        <base />\r\n        <choose>\r\n            <when condition=\"@(context.Response.StatusCode < 400)\">\r\n                <set-body template=\"liquid\">\r\n        {\r\n            \"getBankResponse\": \r\n            {\r\n                \"details\": \r\n                {\r\n                    \"bezeichnung\": {% if body.envelope.body.getBankResponse.details.bezeichnung %}\"{{body.envelope.body.getBankResponse.details.bezeichnung | Replace: '\\r', '\\r' | Replace: '\\n', '\\n' | Replace: '([^\\\\](\\\\\\\\)*)\"', '$1\\\"'}}\"{% else %} null {% endif %},\r\n                    \"bic\": {% if body.envelope.body.getBankResponse.details.bic %}\"{{body.envelope.body.getBankResponse.details.bic | Replace: '\\r', '\\r' | Replace: '\\n', '\\n' | Replace: '([^\\\\](\\\\\\\\)*)\"', '$1\\\"'}}\"{% else %} null {% endif %},\r\n                    \"ort\": {% if body.envelope.body.getBankResponse.details.ort %}\"{{body.envelope.body.getBankResponse.details.ort | Replace: '\\r', '\\r' | Replace: '\\n', '\\n' | Replace: '([^\\\\](\\\\\\\\)*)\"', '$1\\\"'}}\"{% else %} null {% endif %},\r\n                    \"plz\": {% if body.envelope.body.getBankResponse.details.plz %}\"{{body.envelope.body.getBankResponse.details.plz | Replace: '\\r', '\\r' | Replace: '\\n', '\\n' | Replace: '([^\\\\](\\\\\\\\)*)\"', '$1\\\"'}}\"{% else %} null {% endif %}\r\n                }\r\n            }\r\n        }</set-body>\r\n            </when>\r\n            <otherwise>\r\n                <set-variable name=\"old-body\" value=\"@(context.Response.Body.As<string>(preserveContent: true))\" />\r\n                <!-- Error response as per https://github.com/Microsoft/api-guidelines/blob/master/Guidelines.md#7102-error-condition-responses -->\r\n                <set-body template=\"liquid\">{\r\n            \"error\": {\r\n                \"code\": \"{{body.envelope.body.fault.faultcode}}\",\r\n                \"message\": \"{{body.envelope.body.fault.faultstring}}\"\r\n            }\r\n        }</set-body>\r\n                <choose>\r\n                    <when condition=\"@(string.IsNullOrEmpty(context.Response.Body.As<JObject>(preserveContent: true)[\"error\"][\"code\"].ToString()) && string.IsNullOrEmpty(context.Response.Body.As<JObject>(preserveContent: true)[\"error\"][\"message\"].ToString()))\">\r\n                        <set-body>@{\r\n                    var newResponseBody = new JObject();\r\n                    newResponseBody[\"error\"] = new JObject();\r\n                    newResponseBody[\"error\"][\"code\"] = \"InvalidErrorResponseBody\";\r\n                    if (string.IsNullOrEmpty((string)context.Variables[\"old-body\"]))\r\n                    {\r\n                        newResponseBody[\"error\"][\"message\"] = \"The error response body was not a valid SOAP error response. The response body was empty.\";\r\n                    }\r\n                    else\r\n                    {\r\n                        newResponseBody[\"error\"][\"message\"] = \"The error response body was not a valid SOAP error response. The response body was: '\" + context.Variables[\"old-body\"] + \"'.\";\r\n                    }\r\n                    return newResponseBody.ToString();\r\n                }</set-body>\r\n                    </when>\r\n                </choose>\r\n            </otherwise>\r\n        </choose>\r\n        <set-header name=\"Content-Type\" exists-action=\"override\">\r\n            <value>application/json</value>\r\n        </set-header>\r\n    </outbound>\r\n    <on-error>\r\n        <base />\r\n    </on-error>\r\n</policies>"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2021-06-01",
+      "name": "[format('{0}-logs', parameters('appName'))]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "sku": {
+          "name": "PerGB2018"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Insights/components",
+      "apiVersion": "2020-02-02",
+      "name": "[format('{0}-insights', parameters('appName'))]",
+      "location": "[parameters('location')]",
+      "kind": "web",
+      "properties": {
+        "WorkspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', format('{0}-logs', parameters('appName')))]",
+        "Application_Type": "web"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.OperationalInsights/workspaces', format('{0}-logs', parameters('appName')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.ApiManagement/service",
+      "apiVersion": "2021-08-01",
+      "name": "[format('{0}-api', parameters('appName'))]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "Developer",
+        "capacity": 1
+      },
+      "properties": {
+        "publisherEmail": "example@example.org",
+        "publisherName": "Example Exampleston"
+      }
+    },
+    {
+      "type": "Microsoft.ApiManagement/service/loggers",
+      "apiVersion": "2021-12-01-preview",
+      "name": "[format('{0}/{1}', format('{0}-api', parameters('appName')), format('{0}logger', parameters('appName')))]",
+      "properties": {
+        "credentials": {
+          "instrumentationKey": "[reference(resourceId('Microsoft.Insights/components', format('{0}-insights', parameters('appName')))).InstrumentationKey]"
+        },
+        "loggerType": "applicationInsights",
+        "resourceId": "[resourceId('Microsoft.Insights/components', format('{0}-insights', parameters('appName')))]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ApiManagement/service', format('{0}-api', parameters('appName')))]",
+        "[resourceId('Microsoft.Insights/components', format('{0}-insights', parameters('appName')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.ApiManagement/service/apis",
+      "apiVersion": "2021-12-01-preview",
+      "name": "[format('{0}/{1}', format('{0}-api', parameters('appName')), 'ShowMeVax')]",
+      "properties": {
+        "path": "smv",
+        "displayName": "Show Me Vax",
+        "subscriptionRequired": false,
+        "protocols": [
+          "https"
+        ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ApiManagement/service', format('{0}-api', parameters('appName')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.ApiManagement/service/apis/operations",
+      "apiVersion": "2021-12-01-preview",
+      "name": "[format('{0}/{1}/{2}', format('{0}-api', parameters('appName')), 'ShowMeVax', 'GetRequiredVaccinations')]",
+      "properties": {
+        "displayName": "GetRequiredVaccinations",
+        "method": "GET",
+        "request": {
+          "description": "string"
+        },
+        "urlTemplate": "/"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ApiManagement/service/apis', format('{0}-api', parameters('appName')), 'ShowMeVax')]"
+      ]
+    },
+    {
+      "type": "Microsoft.ApiManagement/service/apis/operations/policies",
+      "apiVersion": "2021-12-01-preview",
+      "name": "[format('{0}/{1}/{2}/{3}', format('{0}-api', parameters('appName')), 'ShowMeVax', 'GetRequiredVaccinations', 'policy')]",
+      "properties": {
+        "format": "xml",
+        "value": "[variables('$fxv#0')]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ApiManagement/service/apis/operations', format('{0}-api', parameters('appName')), 'ShowMeVax', 'GetRequiredVaccinations')]"
+      ]
+    },
+    {
+      "type": "Microsoft.ApiManagement/service/apis/operations",
+      "apiVersion": "2021-12-01-preview",
+      "name": "[format('{0}/{1}/{2}', format('{0}-api', parameters('appName')), 'ShowMeVax', 'Refresh')]",
+      "properties": {
+        "displayName": "Refresh",
+        "method": "GET",
+        "request": {
+          "description": "string"
+        },
+        "urlTemplate": "/invoke"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ApiManagement/service/apis', format('{0}-api', parameters('appName')), 'ShowMeVax')]"
+      ]
+    },
+    {
+      "type": "Microsoft.ApiManagement/service/apis/operations/policies",
+      "apiVersion": "2021-12-01-preview",
+      "name": "[format('{0}/{1}/{2}/{3}', format('{0}-api', parameters('appName')), 'ShowMeVax', 'Refresh', 'policy')]",
+      "properties": {
+        "format": "xml",
+        "value": "[variables('$fxv#1')]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ApiManagement/service/apis/operations', format('{0}-api', parameters('appName')), 'ShowMeVax', 'Refresh')]"
+      ]
+    },
+    {
+      "type": "Microsoft.ApiManagement/service/apis",
+      "apiVersion": "2021-12-01-preview",
+      "name": "[format('{0}/{1}', format('{0}-api', parameters('appName')), 'Medicaid')]",
+      "properties": {
+        "path": "medicaid",
+        "format": "openapi+json",
+        "subscriptionRequired": false,
+        "value": "[variables('$fxv#2')]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ApiManagement/service', format('{0}-api', parameters('appName')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.ApiManagement/service/apis/policies",
+      "apiVersion": "2021-12-01-preview",
+      "name": "[format('{0}/{1}/{2}', format('{0}-api', parameters('appName')), 'Medicaid', 'policy')]",
+      "properties": {
+        "format": "rawxml",
+        "value": "[variables('$fxv#3')]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ApiManagement/service/apis', format('{0}-api', parameters('appName')), 'Medicaid')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2020-12-01",
+      "name": "[parameters('appName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "S1",
+        "capacity": 1
+      },
+      "properties": {
+        "reserved": true
+      },
+      "kind": "linux"
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2018-11-01",
+      "name": "[format('{0}-web', parameters('appName'))]",
+      "location": "[parameters('location')]",
+      "tags": {
+        "[format('hidden-related:{0}/providers/Microsoft.Web/serverfarms/appServicePlan', resourceGroup().id)]": "Resource"
+      },
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appName'))]",
+        "siteConfig": {
+          "linuxFxVersion": "DOTNETCORE|6.0",
+          "appSettings": [
+            {
+              "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+              "value": "[reference(resourceId('Microsoft.Insights/components', format('{0}-insights', parameters('appName')))).InstrumentationKey]"
+            },
+            {
+              "name": "ROOT_URL",
+              "value": "[reference(resourceId('Microsoft.ApiManagement/service', format('{0}-api', parameters('appName')))).gatewayUrl]"
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ApiManagement/service', format('{0}-api', parameters('appName')))]",
+        "[resourceId('Microsoft.Insights/components', format('{0}-insights', parameters('appName')))]",
+        "[resourceId('Microsoft.Web/serverfarms', parameters('appName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Web/sites/sourcecontrols",
+      "apiVersion": "2021-01-01",
+      "name": "[format('{0}/web', format('{0}-web', parameters('appName')))]",
+      "properties": {
+        "repoUrl": "https://github.com/ralacher/azure-integration-services-demo",
+        "branch": "master",
+        "isManualIntegration": true
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', format('{0}-web', parameters('appName')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Logic/workflows",
+      "apiVersion": "2019-05-01",
+      "name": "[format('{0}-logic-put-message', parameters('appName'))]",
+      "location": "[parameters('location')]",
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "properties": {
+        "definition": {
+          "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+          "contentVersion": "1.0.0.0",
+          "triggers": {
+            "manual": {
+              "type": "Request",
+              "kind": "Http"
+            }
+          },
+          "actions": {
+            "Response": {
+              "inputs": {
+                "body": {
+                  "missing": [
+                    "DTaP",
+                    "MMR"
+                  ]
+                },
+                "statusCode": 200
+              },
+              "kind": "http",
+              "runAfter": {
+                "Send_message": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Response"
+            },
+            "Send_message": {
+              "inputs": {
+                "body": {
+                  "ContentData": "@{base64(triggerBody())}"
+                },
+                "host": {
+                  "connection": {
+                    "name": "@parameters('$connections')['servicebus']['connectionId']"
+                  }
+                },
+                "method": "post",
+                "path": "/@{encodeURIComponent(encodeURIComponent(''))}/messages",
+                "queries": {
+                  "systemProperties": "None"
+                }
+              },
+              "runAfter": {},
+              "type": "ApiConnection"
+            }
+          },
+          "parameters": {
+            "$connections": {
+              "defaultValue": {},
+              "type": "Object"
+            }
+          }
+        },
+        "parameters": {
+          "$connections": {
+            "value": {
+              "servicebus": {
+                "id": "[subscriptionResourceId('Microsoft.Web/locations/managedApis', parameters('location'), 'servicebus')]",
+                "connectionId": "[resourceId('Microsoft.Web/connections', 'service-bus-connection')]"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.ApiManagement/service/backends",
+      "apiVersion": "2021-12-01-preview",
+      "name": "[format('{0}/{1}', format('{0}-api', parameters('appName')), 'put-message')]",
+      "properties": {
+        "protocol": "http",
+        "resourceId": "[listCallBackUrl(format('{0}/triggers/manual', resourceId('Microsoft.Logic/workflows', format('{0}-logic-put-message', parameters('appName')))), '2019-05-01').basePath]",
+        "url": "[listCallBackUrl(format('{0}/triggers/manual', resourceId('Microsoft.Logic/workflows', format('{0}-logic-put-message', parameters('appName')))), '2019-05-01').basePath]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ApiManagement/service', format('{0}-api', parameters('appName')))]",
+        "[resourceId('Microsoft.Logic/workflows', format('{0}-logic-put-message', parameters('appName')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.ApiManagement/service/namedValues",
+      "apiVersion": "2021-12-01-preview",
+      "name": "[format('{0}/{1}', format('{0}-api', parameters('appName')), 'put-message')]",
+      "properties": {
+        "displayName": "put-message-auth-token",
+        "secret": true,
+        "value": "[listCallBackUrl(format('{0}/triggers/manual', resourceId('Microsoft.Logic/workflows', format('{0}-logic-put-message', parameters('appName')))), '2019-05-01').queries.sig]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ApiManagement/service', format('{0}-api', parameters('appName')))]",
+        "[resourceId('Microsoft.Logic/workflows', format('{0}-logic-put-message', parameters('appName')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Logic/workflows",
+      "apiVersion": "2019-05-01",
+      "name": "[format('{0}-logic-process-message', parameters('appName'))]",
+      "location": "[parameters('location')]",
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "properties": {
+        "definition": {
+          "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+          "contentVersion": "1.0.0.0",
+          "actions": {
+            "Complete_the_message_in_a_queue": {
+              "inputs": {
+                "host": {
+                  "connection": {
+                    "name": "@parameters('$connections')['servicebus']['connectionId']"
+                  }
+                },
+                "method": "delete",
+                "path": "[format('/@{{encodeURIComponent(encodeURIComponent(''{0}''))}}/messages/complete', format('{0}-queue', parameters('appName')))]",
+                "queries": {
+                  "lockToken": "@triggerBody()?['LockToken']",
+                  "queueType": "Main",
+                  "sessionId": ""
+                }
+              },
+              "runAfter": {},
+              "type": "ApiConnection"
+            }
+          },
+          "parameters": {
+            "$connections": {
+              "defaultValue": {},
+              "type": "Object"
+            }
+          },
+          "triggers": {
+            "When_a_message_is_received_in_a_queue_(peek-lock)": {
+              "evaluatedRecurrence": {
+                "frequency": "Minute",
+                "interval": 1
+              },
+              "inputs": {
+                "host": {
+                  "connection": {
+                    "name": "@parameters('$connections')['servicebus']['connectionId']"
+                  }
+                },
+                "method": "get",
+                "path": "[format('/@{{encodeURIComponent(encodeURIComponent(''{0}''))}}/messages/head/peek', format('{0}-queue', parameters('appName')))]",
+                "queries": {
+                  "queueType": "Main",
+                  "sessionId": "None"
+                }
+              },
+              "recurrence": {
+                "frequency": "Minute",
+                "interval": 1
+              },
+              "type": "ApiConnection"
+            }
+          }
+        },
+        "parameters": {
+          "$connections": {
+            "value": {
+              "servicebus": {
+                "id": "[subscriptionResourceId('Microsoft.Web/locations/managedApis', parameters('location'), 'servicebus')]",
+                "connectionId": "[resourceId('Microsoft.Web/connections', 'service-bus-connection')]"
+              }
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ServiceBus/namespaces/queues', format('{0}-namespace', parameters('appName')), format('{0}-queue', parameters('appName')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Logic/workflows",
+      "apiVersion": "2019-05-01",
+      "name": "[format('{0}-logic-send-http-response', parameters('appName'))]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "definition": {
+          "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+          "contentVersion": "1.0.0.0",
+          "triggers": {
+            "manual": {
+              "inputs": {
+                "method": "GET"
+              },
+              "type": "Request",
+              "kind": "Http"
+            }
+          },
+          "actions": {
+            "Response": {
+              "inputs": {
+                "body": {
+                  "missing": [
+                    "DTaP",
+                    "MMR"
+                  ]
+                },
+                "statusCode": 200
+              },
+              "kind": "http",
+              "runAfter": {},
+              "type": "Response"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.ApiManagement/service/backends",
+      "apiVersion": "2021-12-01-preview",
+      "name": "[format('{0}/{1}', format('{0}-api', parameters('appName')), 'send-http-response')]",
+      "properties": {
+        "protocol": "http",
+        "resourceId": "[listCallBackUrl(format('{0}/triggers/manual', resourceId('Microsoft.Logic/workflows', format('{0}-logic-send-http-response', parameters('appName')))), '2019-05-01').basePath]",
+        "url": "[listCallBackUrl(format('{0}/triggers/manual', resourceId('Microsoft.Logic/workflows', format('{0}-logic-send-http-response', parameters('appName')))), '2019-05-01').basePath]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ApiManagement/service', format('{0}-api', parameters('appName')))]",
+        "[resourceId('Microsoft.Logic/workflows', format('{0}-logic-send-http-response', parameters('appName')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.ApiManagement/service/namedValues",
+      "apiVersion": "2021-12-01-preview",
+      "name": "[format('{0}/{1}', format('{0}-api', parameters('appName')), 'send-http-response')]",
+      "properties": {
+        "displayName": "send-response-auth-token",
+        "secret": true,
+        "value": "[listCallBackUrl(format('{0}/triggers/manual', resourceId('Microsoft.Logic/workflows', format('{0}-logic-send-http-response', parameters('appName')))), '2019-05-01').queries.sig]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ApiManagement/service', format('{0}-api', parameters('appName')))]",
+        "[resourceId('Microsoft.Logic/workflows', format('{0}-logic-send-http-response', parameters('appName')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Web/connections",
+      "apiVersion": "2016-06-01",
+      "name": "service-bus-connection",
+      "location": "[parameters('location')]",
+      "properties": {
+        "api": {
+          "id": "[subscriptionResourceId('Microsoft.Web/locations/managedApis', parameters('location'), 'servicebus')]"
+        },
+        "displayName": "servicebus",
+        "parameterValues": {
+          "connectionString": "[reference(resourceId('Microsoft.ServiceBus/namespaces', format('{0}-namespace', parameters('appName')))).serviceBusEndpoint]"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ServiceBus/namespaces', format('{0}-namespace', parameters('appName')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.ServiceBus/namespaces",
+      "apiVersion": "2022-01-01-preview",
+      "name": "[format('{0}-namespace', parameters('appName'))]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "capacity": 1,
+        "name": "Standard",
+        "tier": "Standard"
+      }
+    },
+    {
+      "type": "Microsoft.ServiceBus/namespaces/queues",
+      "apiVersion": "2022-01-01-preview",
+      "name": "[format('{0}/{1}', format('{0}-namespace', parameters('appName')), format('{0}-queue', parameters('appName')))]",
+      "properties": {},
+      "dependsOn": [
+        "[resourceId('Microsoft.ServiceBus/namespaces', format('{0}-namespace', parameters('appName')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2020-04-01-preview",
+      "name": "[guid(subscription().id, resourceId('Microsoft.Logic/workflows', format('{0}-logic-put-message', parameters('appName'))))]",
+      "properties": {
+        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '090c5cfd-751d-490a-894a-3ce6f1109419')]",
+        "principalId": "[reference(resourceId('Microsoft.Logic/workflows', format('{0}-logic-put-message', parameters('appName'))), '2019-05-01', 'full').identity.principalId]",
+        "principalType": "ServicePrincipal"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Logic/workflows', format('{0}-logic-put-message', parameters('appName')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2020-04-01-preview",
+      "name": "[guid(subscription().id, resourceId('Microsoft.Logic/workflows', format('{0}-logic-process-message', parameters('appName'))))]",
+      "properties": {
+        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '090c5cfd-751d-490a-894a-3ce6f1109419')]",
+        "principalId": "[reference(resourceId('Microsoft.Logic/workflows', format('{0}-logic-process-message', parameters('appName'))), '2019-05-01', 'full').identity.principalId]",
+        "principalType": "ServicePrincipal"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Logic/workflows', format('{0}-logic-process-message', parameters('appName')))]"
+      ]
+    }
+  ]
+}
