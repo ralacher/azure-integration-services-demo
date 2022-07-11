@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.8.9.13224",
-      "templateHash": "1659594140166326115"
+      "templateHash": "6348774500035367376"
     }
   },
   "parameters": {
@@ -308,7 +308,10 @@
             }
           }
         }
-      }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/connections', 'service-bus-connection')]"
+      ]
     },
     {
       "type": "Microsoft.ApiManagement/service/backends",
@@ -415,6 +418,7 @@
         }
       },
       "dependsOn": [
+        "[resourceId('Microsoft.Web/connections', 'service-bus-connection')]",
         "[resourceId('Microsoft.ServiceBus/namespaces/queues', format('{0}-namespace', parameters('appName')), format('{0}-queue', parameters('appName')))]"
       ]
     },
