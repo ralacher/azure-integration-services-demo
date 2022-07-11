@@ -185,6 +185,9 @@ resource webApplicationSource 'Microsoft.Web/sites/sourcecontrols@2021-01-01' = 
 resource logicAppPutMessage 'Microsoft.Logic/workflows@2019-05-01' = {
   name: '${appName}-logic-put-message'
   location: location
+  dependsOn: [
+    serviceBusConnection
+  ]
   identity: {
     type: 'SystemAssigned'
   }
@@ -277,6 +280,9 @@ resource putMessageSecret 'Microsoft.ApiManagement/service/namedValues@2021-12-0
 resource logicAppProcessMessage 'Microsoft.Logic/workflows@2019-05-01' = {
   name: '${appName}-logic-process-message'
   location: location
+  dependsOn: [
+    serviceBusConnection
+  ]
   identity: {
     type: 'SystemAssigned'
   }
