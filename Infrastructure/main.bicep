@@ -1,7 +1,10 @@
 param appName string
 param location string = resourceGroup().location
 
-/*  App Insights and Log Analytics */
+/*  
+  App Insights and Log Analytics
+  These will be used by API Management and App Services
+*/
 resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2021-06-01' = {
   name: '${appName}-logs'
   location: location
@@ -66,7 +69,6 @@ resource showMeVaxApi 'Microsoft.ApiManagement/service/apis@2021-12-01-preview' 
   }
 }
 
-// Get Required Vaccinations operation
 resource showMeVaxRequiredOperation 'Microsoft.ApiManagement/service/apis/operations@2021-12-01-preview' = {
   name: 'GetRequiredVaccinations'
   parent: showMeVaxApi
@@ -173,6 +175,7 @@ resource webApplication 'Microsoft.Web/sites@2018-11-01' = {
   }
 }
 
+// Source control resource to clone and build the Blazor web application during deployment
 resource webApplicationSource 'Microsoft.Web/sites/sourcecontrols@2021-01-01' = {
   name: '${webApplication.name}/web'
   properties: {
@@ -182,6 +185,9 @@ resource webApplicationSource 'Microsoft.Web/sites/sourcecontrols@2021-01-01' = 
   }
 }
 
+/*
+  Logic App resources
+*/
 resource logicAppPutMessage 'Microsoft.Logic/workflows@2019-05-01' = {
   name: '${appName}-logic-put-message'
   location: location
@@ -255,7 +261,7 @@ resource logicAppPutMessage 'Microsoft.Logic/workflows@2019-05-01' = {
   }
 }
 
-// Logic App backend definitions
+// API Management backend definition for the Logic App's URL
 resource putMessageBackend 'Microsoft.ApiManagement/service/backends@2021-12-01-preview' = {
   name: 'put-message'
   parent: apiManagementService
@@ -266,6 +272,7 @@ resource putMessageBackend 'Microsoft.ApiManagement/service/backends@2021-12-01-
   }
 }
 
+// API Management named value for the Logic App authorization token
 resource putMessageSecret 'Microsoft.ApiManagement/service/namedValues@2021-12-01-preview' = {
   name: 'put-message'
   parent: apiManagementService
