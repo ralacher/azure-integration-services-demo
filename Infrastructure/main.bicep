@@ -232,7 +232,7 @@ resource logicAppPutMessage 'Microsoft.Logic/workflows@2019-05-01' = {
               }
             }
             method: 'post'
-            path: '/@{encodeURIComponent(encodeURIComponent(\'\'))}/messages'
+            path: '/@{encodeURIComponent(encodeURIComponent(\'${serviceBusQueue.name}\'))}/messages'
             queries: {
               systemProperties: 'None'
             }
