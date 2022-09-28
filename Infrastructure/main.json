@@ -498,7 +498,7 @@
         },
         "displayName": "servicebus",
         "parameterValues": {
-          "connectionString": "[reference(resourceId('Microsoft.ServiceBus/namespaces', format('{0}-namespace', parameters('appName')))).serviceBusEndpoint]"
+         "connectionString": "[listKeys(resourceId('Microsoft.ServiceBus/namespaces/authorizationRules', format('{0}-namespace', parameters('appName')), 'RootManageSharedAccessKey'), '2017-04-01').primaryConnectionString]"
         }
       },
       "dependsOn": [
