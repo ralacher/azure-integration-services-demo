@@ -282,7 +282,7 @@
                   }
                 },
                 "method": "post",
-                "path": "/@{encodeURIComponent(encodeURIComponent(''))}/messages",
+                "path": "[format('/@{{encodeURIComponent(encodeURIComponent(''{0}''))}}/messages', format('{0}-queue', parameters('appName')))]",
                 "queries": {
                   "systemProperties": "None"
                 }
