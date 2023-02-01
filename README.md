@@ -13,6 +13,10 @@
   - Microsoft.Storage
   - Microsoft.Web
 
+
+
+
+
 # Instructions
 1. Click on the Deploy to Azure button above
 2. Either create a new resource group or select an existing one
